@@ -109,4 +109,77 @@ const getClaims = async (req, res) => {
   }
 };
 
-module.exports = { createClaim, getClaims };
+/**
+ * PUT /api/claims/:id/status
+ * Admin only. Approve or reject a claim.
+ */
+const updateClaimStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, reviewNotes } = req.body;
+
+    // --- Validate claim ID format ---
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid claim ID',
+      });
+    }
+
+    // --- Validate status ---
+    const allowedStatuses = ['Approved', 'Rejected'];
+    if (!status || !allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Status must be one of: ${allowedStatuses.join(', ')}`,
+      });
+    }
+
+    // --- Find claim ---
+    const claim = await Claim.findById(id);
+
+    if (!claim) {
+      return res.status(404).json({
+        success: false,
+        message: 'Claim not found',
+      });
+    }
+
+    // --- Warn if already reviewed ---
+    if (claim.status !== 'Pending') {
+      return res.status(400).json({
+        success: false,
+        message: `Claim has already been ${claim.status.toLowerCase()}. Cannot change status again.`,
+      });
+    }
+
+    // --- Update claim ---
+    claim.status = status;
+    claim.reviewNotes = reviewNotes || '';
+    claim.reviewedBy = req.user._id;
+    claim.reviewedAt = new Date();
+
+    await claim.save();
+
+    // Populate references before returning
+    await claim.populate([
+      { path: 'farmer', select: 'name email' },
+      { path: 'policy', select: 'policyName coveredCrop premiumAmount coverageAmount' },
+      { path: 'reviewedBy', select: 'name email' },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message: `Claim ${status.toLowerCase()} successfully`,
+      data: claim,
+    });
+  } catch (error) {
+    console.error('Update claim status error:', error.message);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating claim status',
+    });
+  }
+};
+
+module.exports = { createClaim, getClaims, updateClaimStatus };
