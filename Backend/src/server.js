@@ -26,6 +26,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/policies', require('./routes/policyRoutes'));
 app.use('/api/claims', require('./routes/claimRoutes'));
 app.use('/api/weather', require('./routes/weatherRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
 
 // Connect to MongoDB, then start server
 connectDB().then(() => {
