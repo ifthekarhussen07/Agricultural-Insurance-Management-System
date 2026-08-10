@@ -24,6 +24,7 @@ app.get('/api/health', (req, res) => {
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/policies', require('./routes/policyRoutes'));
+app.use('/api/claims', require('./routes/claimRoutes'));
 
 // Connect to MongoDB, then start server
 connectDB().then(() => {
