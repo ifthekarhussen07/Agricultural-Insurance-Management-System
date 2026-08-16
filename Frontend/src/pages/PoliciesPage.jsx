@@ -1,27 +1,22 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {
-  FileText,
   Shield,
   Sprout,
-  DollarSign,
   Clock,
   Search,
-  Filter,
   ArrowRight,
   Info,
   RefreshCw,
   AlertCircle,
   CheckCircle2,
   FilePlus,
-  Layers,
 } from 'lucide-react'
 import { getPolicies } from '../services/policyService'
 import { useAuth } from '../hooks/useAuth'
 import { Card, CardHeader, CardTitle, CardBody, CardFooter } from '../components/Card'
 import Button from '../components/Button'
 import Badge from '../components/Badge'
-import Input from '../components/Input'
 import Select from '../components/Select'
 import Modal from '../components/Modal'
 import Loading from '../components/Loading'
@@ -29,7 +24,6 @@ import EmptyState from '../components/EmptyState'
 
 function PoliciesPage() {
   const { user } = useAuth()
-  const navigate = useNavigate()
 
   const [policies, setPolicies] = useState([])
   const [loading, setLoading] = useState(true)

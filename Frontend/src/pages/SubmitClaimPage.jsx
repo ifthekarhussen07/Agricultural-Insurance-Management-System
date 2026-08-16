@@ -3,12 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import {
   FilePlus,
   Shield,
-  Sprout,
   AlertTriangle,
-  Calendar,
-  MapPin,
-  FileText,
-  Link2,
   CheckCircle2,
   AlertCircle,
   ArrowLeft,
@@ -263,7 +258,7 @@ function SubmitClaimPage() {
               No Active Policies Found
             </h3>
             <p className="text-sm text-gray-500 max-w-md mx-auto">
-              You must have an active crop policy registered before submitting a claim.
+              {policyLoadError || 'You must have an active crop policy registered before submitting a claim.'}
             </p>
             <Link to="/policies">
               <Button variant="primary">Browse Available Policies</Button>

@@ -8,7 +8,6 @@ import {
   XCircle,
   AlertCircle,
   RefreshCw,
-  MapPin,
   Calendar,
   Layers,
   ArrowRight,

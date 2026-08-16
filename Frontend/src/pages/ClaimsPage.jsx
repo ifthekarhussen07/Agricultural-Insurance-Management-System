@@ -10,26 +10,18 @@ import {
   Calendar,
   MapPin,
   Search,
-  Filter,
   RefreshCw,
   ExternalLink,
   Sprout,
-  FileText,
-  AlertTriangle,
-  Info,
-  ChevronRight,
-  ArrowRight,
 } from 'lucide-react'
 import { getClaims } from '../services/claimService'
-import { useAuth } from '../hooks/useAuth'
-import { Card, CardHeader, CardTitle, CardBody } from '../components/Card'
+import { Card, CardHeader, CardBody } from '../components/Card'
 import Button from '../components/Button'
 import Badge from '../components/Badge'
 import Loading from '../components/Loading'
 import EmptyState from '../components/EmptyState'
 
 function ClaimsPage() {
-  const { user } = useAuth()
   const navigate = useNavigate()
 
   const [claims, setClaims] = useState([])
@@ -409,6 +401,8 @@ function ClaimsPage() {
                               <CheckCircle2 className="w-5 h-5" />
                             ) : isRejected ? (
                               <XCircle className="w-5 h-5" />
+                            ) : (
+                              <Clock className="w-5 h-5" />
                             )}
                           </div>
                           <div>
