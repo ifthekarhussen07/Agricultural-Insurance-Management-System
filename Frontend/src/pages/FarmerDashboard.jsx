@@ -21,6 +21,7 @@ import Button from '../components/Button'
 import Badge from '../components/Badge'
 import Loading from '../components/Loading'
 import EmptyState from '../components/EmptyState'
+import WeatherWidget from '../components/WeatherWidget'
 
 function FarmerDashboard() {
   const { user } = useAuth()
@@ -94,7 +95,7 @@ function FarmerDashboard() {
             </h1>
             <p className="text-emerald-100/90 text-sm max-w-xl">
               Track active crop protections, monitor real-time claim statuses,
-              and manage agricultural coverage.
+              and stay ahead of weather risks.
             </p>
           </div>
 
@@ -215,191 +216,184 @@ function FarmerDashboard() {
         </Card>
       </div>
 
-      {/* 4. Recent Claims & Actions */}
-      <Card>
-        <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
-          <div className="flex items-center gap-2.5">
-            <ShieldCheck className="w-5 h-5 text-emerald-600" />
-            <CardTitle>Recent Claims History</CardTitle>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={fetchFarmerClaims}
-              disabled={loading}
-              className="text-gray-500 hover:text-gray-900"
-            >
-              <RefreshCw
-                className={`w-4 h-4 mr-1 ${loading ? 'animate-spin' : ''}`}
-              />
-              Refresh
-            </Button>
-          </div>
-        </CardHeader>
-
-        <CardBody className="p-0">
-          {/* Error State */}
-          {error && (
-            <div className="p-6">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700">
-                <div className="flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 shrink-0 text-red-600" />
-                  <p className="text-sm font-medium">{error}</p>
-                </div>
+      {/* 4. Dashboard Core Grid: Recent Claims (2 Cols) + Weather Risk Widget (1 Col) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        {/* Left Column: Recent Claims History */}
+        <div className="lg:col-span-2 space-y-6">
+          <Card>
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                <CardTitle>Recent Claims History</CardTitle>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link to="/claims">
+                  <Button variant="ghost" size="sm" className="text-emerald-700 hover:text-emerald-800">
+                    View All
+                    <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                  </Button>
+                </Link>
                 <Button
+                  variant="ghost"
                   size="sm"
-                  variant="secondary"
                   onClick={fetchFarmerClaims}
-                  className="shrink-0"
+                  disabled={loading}
+                  className="text-gray-500 hover:text-gray-900"
                 >
-                  Retry
+                  <RefreshCw
+                    className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
+                  />
                 </Button>
               </div>
-            </div>
-          )}
+            </CardHeader>
 
-          {/* Loading State */}
-          {loading && !error && (
-            <div className="py-12">
-              <Loading message="Loading your claims..." />
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!loading && !error && claims.length === 0 && (
-            <div className="p-6">
-              <EmptyState
-                icon={FilePlus}
-                title="No insurance claims filed yet"
-                description="When your insured crops suffer damage from drought, flood, pests, or hail, file a claim to request compensation."
-                actionLabel="Submit Your First Claim"
-                onAction={() => navigate('/submit-claim')}
-              />
-            </div>
-          )}
-
-          {/* Table of Claims for Desktop */}
-          {!loading && !error && claims.length > 0 && (
-            <div>
-              {/* Desktop Table View */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-left text-sm text-gray-600">
-                  <thead className="bg-gray-50/80 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                    <tr>
-                      <th className="px-6 py-3.5">Policy / Crop</th>
-                      <th className="px-6 py-3.5">Damage Type</th>
-                      <th className="px-6 py-3.5">Incident Date</th>
-                      <th className="px-6 py-3.5">Location</th>
-                      <th className="px-6 py-3.5">Status</th>
-                      <th className="px-6 py-3.5 text-right">Filed Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {claims.map((claim) => (
-                      <tr
-                        key={claim._id}
-                        className="hover:bg-gray-50/60 transition-colors"
-                      >
-                        <td className="px-6 py-4">
-                          <div className="font-semibold text-gray-900">
-                            {claim.policy?.policyName || 'Standard Policy'}
-                          </div>
-                          <div className="text-xs text-emerald-700 font-medium">
-                            Crop: {claim.crop}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
-                            {claim.damageType}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-gray-700">
-                          <div className="flex items-center gap-1.5 text-xs">
-                            <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                            {formatDate(claim.incidentDate)}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-gray-700">
-                          <div className="flex items-center gap-1.5 text-xs">
-                            <MapPin className="w-3.5 h-3.5 text-gray-400" />
-                            {claim.location}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          {getStatusBadge(claim.status)}
-                          {claim.reviewNotes && (
-                            <p className="text-xs text-gray-500 mt-1 max-w-xs truncate" title={claim.reviewNotes}>
-                              Note: {claim.reviewNotes}
-                            </p>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-right text-xs text-gray-500">
-                          {formatDate(claim.createdAt)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Mobile Card List View */}
-              <div className="md:hidden divide-y divide-gray-100">
-                {claims.map((claim) => (
-                  <div key={claim._id} className="p-4 space-y-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h4 className="font-semibold text-gray-900 text-sm">
-                          {claim.policy?.policyName || 'Crop Policy'}
-                        </h4>
-                        <p className="text-xs text-emerald-600 font-medium">
-                          Crop: {claim.crop}
-                        </p>
-                      </div>
-                      {getStatusBadge(claim.status)}
+            <CardBody className="p-0">
+              {/* Error State */}
+              {error && (
+                <div className="p-6">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700">
+                    <div className="flex items-center gap-3">
+                      <AlertCircle className="w-5 h-5 shrink-0 text-red-600" />
+                      <p className="text-sm font-medium">{error}</p>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 bg-gray-50 p-2.5 rounded-lg">
-                      <div>
-                        <span className="text-gray-400 block">Damage:</span>
-                        <span className="font-medium text-gray-800">
-                          {claim.damageType}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400 block">Location:</span>
-                        <span className="font-medium text-gray-800 truncate block">
-                          {claim.location}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400 block">Incident:</span>
-                        <span>{formatDate(claim.incidentDate)}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400 block">Filed:</span>
-                        <span>{formatDate(claim.createdAt)}</span>
-                      </div>
-                    </div>
-
-                    {claim.description && (
-                      <p className="text-xs text-gray-600 italic">
-                        &quot;{claim.description}&quot;
-                      </p>
-                    )}
-
-                    {claim.reviewNotes && (
-                      <div className="text-xs bg-amber-50 text-amber-800 p-2 rounded border border-amber-200">
-                        <strong>Review Note:</strong> {claim.reviewNotes}
-                      </div>
-                    )}
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={fetchFarmerClaims}
+                      className="shrink-0"
+                    >
+                      Retry
+                    </Button>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </CardBody>
-      </Card>
+                </div>
+              )}
+
+              {/* Loading State */}
+              {loading && !error && (
+                <div className="py-12">
+                  <Loading message="Loading your claims..." />
+                </div>
+              )}
+
+              {/* Empty State */}
+              {!loading && !error && claims.length === 0 && (
+                <div className="p-6">
+                  <EmptyState
+                    icon={FilePlus}
+                    title="No insurance claims filed yet"
+                    description="When your insured crops suffer damage from drought, flood, pests, or hail, file a claim to request compensation."
+                    actionLabel="Submit Your First Claim"
+                    onAction={() => navigate('/submit-claim')}
+                  />
+                </div>
+              )}
+
+              {/* Table of Claims for Desktop */}
+              {!loading && !error && claims.length > 0 && (
+                <div>
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full text-left text-sm text-gray-600">
+                      <thead className="bg-gray-50/80 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                        <tr>
+                          <th className="px-5 py-3.5">Policy / Crop</th>
+                          <th className="px-5 py-3.5">Damage Type</th>
+                          <th className="px-5 py-3.5">Incident</th>
+                          <th className="px-5 py-3.5">Status</th>
+                          <th className="px-5 py-3.5 text-right">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {claims.slice(0, 5).map((claim) => (
+                          <tr
+                            key={claim._id}
+                            className="hover:bg-gray-50/60 transition-colors"
+                          >
+                            <td className="px-5 py-4">
+                              <div className="font-semibold text-gray-900">
+                                {claim.policy?.policyName || 'Standard Policy'}
+                              </div>
+                              <div className="text-xs text-emerald-700 font-medium">
+                                Crop: {claim.crop}
+                              </div>
+                            </td>
+                            <td className="px-5 py-4">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                                {claim.damageType}
+                              </span>
+                            </td>
+                            <td className="px-5 py-4 text-gray-700">
+                              <div className="flex items-center gap-1.5 text-xs">
+                                <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                                {formatDate(claim.incidentDate)}
+                              </div>
+                            </td>
+                            <td className="px-5 py-4">
+                              {getStatusBadge(claim.status)}
+                            </td>
+                            <td className="px-5 py-4 text-right">
+                              <Link to="/claims">
+                                <Button size="sm" variant="ghost" className="text-xs">
+                                  Track
+                                </Button>
+                              </Link>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Card List View */}
+                  <div className="md:hidden divide-y divide-gray-100">
+                    {claims.slice(0, 5).map((claim) => (
+                      <div key={claim._id} className="p-4 space-y-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <h4 className="font-semibold text-gray-900 text-sm">
+                              {claim.policy?.policyName || 'Crop Policy'}
+                            </h4>
+                            <p className="text-xs text-emerald-600 font-medium">
+                              Crop: {claim.crop}
+                            </p>
+                          </div>
+                          {getStatusBadge(claim.status)}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 bg-gray-50 p-2.5 rounded-lg">
+                          <div>
+                            <span className="text-gray-400 block">Damage:</span>
+                            <span className="font-medium text-gray-800">
+                              {claim.damageType}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-gray-400 block">Incident:</span>
+                            <span>{formatDate(claim.incidentDate)}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-end pt-1">
+                          <Link to="/claims">
+                            <Button size="sm" variant="ghost" className="text-xs">
+                              View in Tracker &rarr;
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardBody>
+          </Card>
+        </div>
+
+        {/* Right Column: Live Weather Risk Widget */}
+        <div className="lg:col-span-1">
+          <WeatherWidget defaultCity="Chicago" />
+        </div>
+      </div>
     </div>
   )
 }
