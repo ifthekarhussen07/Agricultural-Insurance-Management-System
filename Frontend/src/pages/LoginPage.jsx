@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Sprout, Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
-import { login } from '../services/authService'
+import { login as loginApi } from '../services/authService'
+import { useAuth } from '../hooks/useAuth'
 import Button from '../components/Button'
 
 function LoginPage() {
   const navigate = useNavigate()
+  const { login: authLogin } = useAuth()
 
   const [form, setForm] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
@@ -46,16 +48,16 @@ function LoginPage() {
     setApiError('')
 
     try {
-      const { data } = await login({
+      const { data } = await loginApi({
         email: form.email.trim().toLowerCase(),
         password: form.password,
       })
 
-      // Store JWT and user info
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
+      // Store JWT and user info via AuthContext
+      authLogin(data.token, data.user)
 
-      navigate('/')
+      const dest = data.user.role === 'Admin' ? '/admin-dashboard' : '/farmer-dashboard'
+      navigate(dest)
     } catch (err) {
       const msg =
         err.response?.data?.message || 'Something went wrong. Please try again.'

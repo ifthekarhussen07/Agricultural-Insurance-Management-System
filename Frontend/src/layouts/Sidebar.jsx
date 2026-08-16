@@ -1,25 +1,42 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import {
   Sprout,
   LayoutDashboard,
   FileText,
   ShieldCheck,
+  FilePlus,
   CloudSun,
   Users,
-  Settings,
+  LogOut,
   X,
 } from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
 
-const navItems = [
-  { label: 'Dashboard', icon: LayoutDashboard, to: '/' },
+const farmerNav = [
+  { label: 'Dashboard', icon: LayoutDashboard, to: '/farmer-dashboard' },
+  { label: 'Policies', icon: FileText, to: '/policies' },
+  { label: 'Submit Claim', icon: FilePlus, to: '/submit-claim' },
+]
+
+const adminNav = [
+  { label: 'Dashboard', icon: LayoutDashboard, to: '/admin-dashboard' },
   { label: 'Policies', icon: FileText, to: '/policies' },
   { label: 'Claims', icon: ShieldCheck, to: '/claims' },
   { label: 'Weather', icon: CloudSun, to: '/weather' },
   { label: 'Users', icon: Users, to: '/users' },
-  { label: 'Settings', icon: Settings, to: '/settings' },
 ]
 
 function Sidebar({ open, onClose }) {
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const navItems = user?.role === 'Admin' ? adminNav : farmerNav
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
   return (
     <>
       {/* Mobile backdrop */}
@@ -75,11 +92,23 @@ function Sidebar({ open, onClose }) {
           ))}
         </nav>
 
-        {/* Footer */}
-        <div className="px-5 py-4 border-t border-gray-100">
-          <p className="text-xs text-gray-400">
-            &copy; {new Date().getFullYear()} AgriInsure
-          </p>
+        {/* Footer with user info + logout */}
+        <div className="px-3 py-4 border-t border-gray-100 space-y-3">
+          {user && (
+            <div className="px-3">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {user.name}
+              </p>
+              <p className="text-xs text-gray-400 truncate">{user.email}</p>
+            </div>
+          )}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+          >
+            <LogOut className="w-5 h-5 shrink-0" />
+            Sign Out
+          </button>
         </div>
       </aside>
     </>

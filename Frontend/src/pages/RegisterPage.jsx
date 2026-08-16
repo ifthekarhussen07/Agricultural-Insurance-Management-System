@@ -10,11 +10,13 @@ import {
   AlertCircle,
   CheckCircle2,
 } from 'lucide-react'
-import { register } from '../services/authService'
+import { register as registerApi } from '../services/authService'
+import { useAuth } from '../hooks/useAuth'
 import Button from '../components/Button'
 
 function RegisterPage() {
   const navigate = useNavigate()
+  const { login: authLogin } = useAuth()
 
   const [form, setForm] = useState({
     name: '',
@@ -80,18 +82,17 @@ function RegisterPage() {
     setApiError('')
 
     try {
-      const { data } = await register({
+      const { data } = await registerApi({
         name: form.name.trim(),
         email: form.email.trim().toLowerCase(),
         password: form.password,
         // Role defaults to Farmer — never send Admin
       })
 
-      // Store JWT and user info
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
+      // Store JWT and user info via AuthContext
+      authLogin(data.token, data.user)
 
-      navigate('/')
+      navigate('/farmer-dashboard')
     } catch (err) {
       const msg =
         err.response?.data?.message || 'Something went wrong. Please try again.'
