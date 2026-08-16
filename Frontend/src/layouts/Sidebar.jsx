@@ -15,6 +15,7 @@ import { useAuth } from '../hooks/useAuth'
 const farmerNav = [
   { label: 'Dashboard', icon: LayoutDashboard, to: '/farmer-dashboard' },
   { label: 'Policies', icon: FileText, to: '/policies' },
+  { label: 'My Claims', icon: ShieldCheck, to: '/claims' },
   { label: 'Submit Claim', icon: FilePlus, to: '/submit-claim' },
 ]
 

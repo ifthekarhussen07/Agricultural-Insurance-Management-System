@@ -9,6 +9,7 @@ import FarmerDashboard from './pages/FarmerDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import PoliciesPage from './pages/PoliciesPage'
 import SubmitClaimPage from './pages/SubmitClaimPage'
+import ClaimsPage from './pages/ClaimsPage'
 import ComponentPreview from './pages/ComponentPreview'
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
         <Route element={<ProtectedRoute allowedRoles={['Farmer', 'Admin']} />}>
           <Route element={<AppLayout />}>
             <Route path="/policies" element={<PoliciesPage />} />
+            <Route path="/claims" element={<ClaimsPage />} />
           </Route>
         </Route>
 
