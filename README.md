@@ -115,22 +115,22 @@ The **Agricultural Insurance Management System** addresses these issues through 
 #### 1. Farmer Dashboard
 *Live agricultural weather monitoring, quick-action navigation, recent claims history, and claim summary metrics.*
 
-![Farmer Dashboard](docs/images/AgriInsure%20-%20Agricultural%20Insurance%20Management(User).png)
+![Farmer Dashboard](docs/images/farmer-dashboard.png)
 
 #### 2. Insurance Policy Catalog
 *Farmer view of active crop insurance plans with coverage terms, annual premiums, and one-click claim initiation.*
 
-![Farmer Policies Catalog](docs/images/AgriInsure%20-%20Agricultural%20Insurance%20Management(User2).png)
+![Farmer Policies Catalog](docs/images/farmer-policies.png)
 
 #### 3. Claim Status Tracker
 *Real-time lifecycle tracking of submitted claims across Submission, Verification, and Final Settlement stages.*
 
-![Farmer Claim Tracker](docs/images/AgriInsure%20-%20Agricultural%20Insurance%20Management(user3).png)
+![Farmer Claim Tracker](docs/images/farmer-claims.png)
 
 #### 4. Claim Filing Portal
 *Structured claim submission form capturing policy linkage, crop damage causes, incident dates, field addresses, and evidence URLs.*
 
-![Farmer Submit Claim](docs/images/AgriInsure%20-%20Agricultural%20Insurance%20Management(user4).png)
+![Farmer Submit Claim](docs/images/farmer-submit-claim.png)
 
 ---
 
@@ -139,17 +139,17 @@ The **Agricultural Insurance Management System** addresses these issues through 
 #### 1. Administrative Operations Center
 *High-level overview of platform metrics, policy coverage ratios, resolution analytics, and recent platform claim records.*
 
-![Admin Dashboard](docs/images/AgriInsure%20-%20Agricultural%20Insurance%20Management(Admin).png)
+![Admin Dashboard](docs/images/admin-dashboard.png)
 
 #### 2. Admin Policy Management
 *Centralized management console to create new insurance products, adjust coverage parameters, and deactivate policies.*
 
-![Admin Policy Management](docs/images/AgriInsure%20-%20Agricultural%20Insurance%20Management(Admin2).png)
+![Admin Policy Management](docs/images/admin-policies.png)
 
 #### 3. Insurance Claims Queue & Review
 *Administrative queue for inspecting damage submissions, verifying external weather context, and issuing approvals or rejections.*
 
-![Admin Claims Queue](docs/images/AgriInsure%20-%20Agricultural%20Insurance%20Management(Admin3).png)
+![Admin Claims Queue](docs/images/admin-claims.png)
 
 ---
 
