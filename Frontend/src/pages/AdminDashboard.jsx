@@ -165,7 +165,7 @@ function AdminDashboard() {
               />
               Sync Metrics
             </Button>
-            <Link to="/claims">
+            <Link to="/admin/claims">
               <Button
                 variant="primary"
                 size="md"
@@ -274,7 +274,7 @@ function AdminDashboard() {
               <div className="mt-4 pt-3 border-t border-amber-100 flex items-center justify-between text-xs text-amber-700 font-medium">
                 <span>Awaiting evaluation</span>
                 <Link
-                  to="/claims"
+                  to="/admin/claims"
                   className="inline-flex items-center hover:underline font-semibold"
                 >
                   Review now &rarr;
@@ -479,7 +479,7 @@ function AdminDashboard() {
               </div>
             </CardBody>
             <div className="p-4 pt-0">
-              <Link to="/claims" className="block">
+              <Link to="/admin/claims" className="block">
                 <Button
                   variant="secondary"
                   size="sm"
@@ -527,7 +527,7 @@ function AdminDashboard() {
             </CardBody>
 
             <div className="p-4 pt-0">
-              <Link to="/claims" className="block">
+              <Link to="/admin/claims" className="block">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -556,7 +556,7 @@ function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Link to="/claims">
+              <Link to="/admin/claims">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -691,7 +691,7 @@ function AdminDashboard() {
 
                           {/* Actions */}
                           <td className="px-6 py-4 text-right">
-                            <Link to="/claims">
+                            <Link to="/admin/claims">
                               <Button
                                 size="sm"
                                 variant="ghost"
@@ -742,7 +742,7 @@ function AdminDashboard() {
                       </div>
 
                       <div className="flex justify-end pt-1">
-                        <Link to="/claims">
+                        <Link to="/admin/claims">
                           <Button size="sm" variant="ghost" className="text-xs text-emerald-700">
                             Inspect Claim &rarr;
                           </Button>

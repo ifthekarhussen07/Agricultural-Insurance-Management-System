@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage'
 import FarmerDashboard from './pages/FarmerDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminPoliciesPage from './pages/AdminPoliciesPage'
+import AdminClaimsPage from './pages/AdminClaimsPage'
 import PoliciesPage from './pages/PoliciesPage'
 import SubmitClaimPage from './pages/SubmitClaimPage'
 import ClaimsPage from './pages/ClaimsPage'
@@ -51,6 +52,7 @@ function App() {
           <Route element={<AppLayout />}>
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin/policies" element={<AdminPoliciesPage />} />
+            <Route path="/admin/claims" element={<AdminClaimsPage />} />
           </Route>
         </Route>
 
