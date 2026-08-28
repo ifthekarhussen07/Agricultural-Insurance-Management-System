@@ -14,7 +14,7 @@ const sizeMap = {
 function Badge({ children, color = 'gray', size = 'sm', className = '' }) {
   return (
     <span
-      className={`inline-flex items-center font-medium rounded-full border ${colorMap[color]} ${sizeMap[size]} ${className}`}
+      className={`inline-flex items-center justify-center whitespace-nowrap font-semibold rounded-full border ${colorMap[color]} ${sizeMap[size]} ${className}`}
     >
       {children}
     </span>
