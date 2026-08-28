@@ -368,7 +368,7 @@ function AdminDashboard() {
               <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
                 <span>Catalogue offerings</span>
                 <Link
-                  to="/policies"
+                  to="/admin/policies"
                   className="text-indigo-600 hover:underline font-semibold"
                 >
                   View catalog &rarr;
@@ -442,7 +442,7 @@ function AdminDashboard() {
               </div>
             </CardBody>
             <div className="p-4 pt-0">
-              <Link to="/policies" className="block">
+              <Link to="/admin/policies" className="block">
                 <Button
                   variant="secondary"
                   size="sm"

@@ -21,7 +21,7 @@ const farmerNav = [
 
 const adminNav = [
   { label: 'Dashboard', icon: LayoutDashboard, to: '/admin-dashboard' },
-  { label: 'Policies', icon: FileText, to: '/policies' },
+  { label: 'Policies', icon: FileText, to: '/admin/policies' },
   { label: 'Claims', icon: ShieldCheck, to: '/claims' },
   { label: 'Weather', icon: CloudSun, to: '/weather' },
   { label: 'Users', icon: Users, to: '/users' },
