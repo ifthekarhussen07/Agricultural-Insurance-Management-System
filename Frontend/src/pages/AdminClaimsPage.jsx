@@ -17,8 +17,21 @@ import {
   FileX,
   FileText,
   AlertTriangle,
+  CloudSun,
+  Sun,
+  Cloud,
+  CloudRain,
+  CloudSnow,
+  CloudLightning,
+  CloudDrizzle,
+  CloudFog,
+  Wind,
+  Droplets,
+  Thermometer,
+  ShieldAlert,
 } from 'lucide-react'
 import { getClaims, updateClaimStatus } from '../services/claimService'
+import { getWeather } from '../services/weatherService'
 import { Card, CardHeader, CardTitle, CardBody } from '../components/Card'
 import Button from '../components/Button'
 import Badge from '../components/Badge'
@@ -57,6 +70,12 @@ function AdminClaimsPage() {
   const [reviewNotes, setReviewNotes] = useState('')
   const [reviewNotesError, setReviewNotesError] = useState('')
 
+  // External Weather Context state for modal
+  const [weatherData, setWeatherData] = useState(null)
+  const [weatherLoading, setWeatherLoading] = useState(false)
+  const [weatherError, setWeatherError] = useState('')
+  const [weatherCityInput, setWeatherCityInput] = useState('')
+
   // Decision Confirmation modal
   const [confirmModalOpen, setConfirmModalOpen] = useState(false)
   const [pendingAction, setPendingAction] = useState(null) // 'Approved' | 'Rejected'
@@ -92,6 +111,35 @@ function AdminClaimsPage() {
     }, 5000)
     return () => clearTimeout(timer)
   }, [successMessage])
+
+  // Fetch weather for a given location / city
+  const fetchClaimWeather = useCallback(async (locationStr) => {
+    if (!locationStr || !locationStr.trim()) {
+      setWeatherError('No location specified in this claim record.')
+      return
+    }
+
+    setWeatherLoading(true)
+    setWeatherError('')
+    try {
+      const response = await getWeather(locationStr.trim())
+      if (response.data?.success && response.data?.data) {
+        setWeatherData(response.data.data)
+      } else {
+        setWeatherData(null)
+        setWeatherError('No meteorological records returned for this location.')
+      }
+    } catch (err) {
+      console.error('Failed to fetch weather for claim location:', err)
+      setWeatherData(null)
+      setWeatherError(
+        err.response?.data?.message ||
+          `Unable to retrieve weather data for "${locationStr}". Try checking city name spelling.`
+      )
+    } finally {
+      setWeatherLoading(false)
+    }
+  }, [])
 
   // Metric counts
   const counts = useMemo(() => {
@@ -152,7 +200,15 @@ function AdminClaimsPage() {
     setSelectedClaim(claim)
     setReviewNotes(claim.reviewNotes || '')
     setReviewNotesError('')
+    setWeatherData(null)
+    setWeatherError('')
+    setWeatherCityInput(claim.location || '')
     setDetailsModalOpen(true)
+
+    // Automatically lookup weather for claim location upon opening modal
+    if (claim.location) {
+      fetchClaimWeather(claim.location)
+    }
   }
 
   const handleCloseReviewModal = () => {
@@ -161,6 +217,9 @@ function AdminClaimsPage() {
     setSelectedClaim(null)
     setReviewNotes('')
     setReviewNotesError('')
+    setWeatherData(null)
+    setWeatherError('')
+    setWeatherLoading(false)
   }
 
   // Trigger Confirmation for Approve or Reject
@@ -199,6 +258,7 @@ function AdminClaimsPage() {
       setSelectedClaim(null)
       setReviewNotes('')
       setPendingAction(null)
+      setWeatherData(null)
 
       // Refresh claim list
       fetchClaimsData()
@@ -212,6 +272,30 @@ function AdminClaimsPage() {
     } finally {
       setSubmittingDecision(false)
     }
+  }
+
+  // Weather icon helper
+  const getWeatherIcon = (condition = '') => {
+    const lower = condition.toLowerCase()
+    if (lower.includes('thunderstorm') || lower.includes('lightning')) {
+      return <CloudLightning className="w-7 h-7 text-amber-500" />
+    }
+    if (lower.includes('rain')) {
+      return <CloudRain className="w-7 h-7 text-blue-500" />
+    }
+    if (lower.includes('drizzle')) {
+      return <CloudDrizzle className="w-7 h-7 text-cyan-500" />
+    }
+    if (lower.includes('snow') || lower.includes('freeze') || lower.includes('frost')) {
+      return <CloudSnow className="w-7 h-7 text-sky-400" />
+    }
+    if (lower.includes('fog') || lower.includes('mist') || lower.includes('haze')) {
+      return <CloudFog className="w-7 h-7 text-gray-400" />
+    }
+    if (lower.includes('cloud')) {
+      return <Cloud className="w-7 h-7 text-slate-500" />
+    }
+    return <Sun className="w-7 h-7 text-amber-500" />
   }
 
   const formatCurrency = (amount) => {
@@ -877,6 +961,176 @@ function AdminClaimsPage() {
                 </a>
               </div>
             )}
+
+            {/* --- DEDICATED WEATHER CONTEXT SECTION --- */}
+            <div className="rounded-xl border-2 border-sky-200 bg-gradient-to-br from-sky-50/70 via-blue-50/40 to-slate-50 p-4 sm:p-5 space-y-4">
+              {/* Weather Section Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-sky-100">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 bg-sky-100 rounded-lg text-sky-700">
+                      <CloudSun className="w-4 h-4" />
+                    </div>
+                    <h4 className="text-sm font-bold text-sky-950">
+                      External Meteorological Reference Data
+                    </h4>
+                  </div>
+                  <p className="text-[11px] text-sky-800/80">
+                    Third-party atmospheric proxy context for verification against recorded damages.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => fetchClaimWeather(weatherCityInput || selectedClaim.location)}
+                    disabled={weatherLoading}
+                    className="bg-white hover:bg-sky-50 text-sky-900 border-sky-200 text-xs shrink-0"
+                  >
+                    <RefreshCw
+                      className={`w-3.5 h-3.5 mr-1 text-sky-600 ${
+                        weatherLoading ? 'animate-spin' : ''
+                      }`}
+                    />
+                    Check Weather
+                  </Button>
+                </div>
+              </div>
+
+              {/* Weather Data / States */}
+              {weatherLoading && (
+                <div className="py-6">
+                  <Loading message={`Querying weather records for "${weatherCityInput || selectedClaim.location}"...`} />
+                </div>
+              )}
+
+              {!weatherLoading && weatherError && (
+                <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-start sm:items-center gap-2.5">
+                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5 sm:mt-0" />
+                    <div>
+                      <span className="font-semibold">{weatherError}</span>
+                      <p className="text-[11px] text-amber-700 mt-0.5">
+                        Weather check is advisory and does not block claim approval or rejection.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <input
+                      type="text"
+                      value={weatherCityInput}
+                      onChange={(e) => setWeatherCityInput(e.target.value)}
+                      placeholder="Try city name..."
+                      className="px-2 py-1 text-xs border border-amber-300 rounded bg-white text-gray-900 w-32 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => fetchClaimWeather(weatherCityInput)}
+                      className="text-xs px-2 py-1 bg-white"
+                    >
+                      Lookup
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {!weatherLoading && !weatherError && weatherData && (
+                <div className="space-y-3.5">
+                  {/* Primary Weather Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {/* Temperature */}
+                    <div className="p-3 rounded-lg bg-white/90 border border-sky-100 shadow-sm flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-amber-50 text-amber-600 shrink-0">
+                        <Thermometer className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className="text-[11px] text-gray-500 block font-medium">
+                          Temperature
+                        </span>
+                        <span className="text-lg font-bold text-gray-900">
+                          {Math.round(weatherData.temperature)}°C
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Condition & Description */}
+                    <div className="p-3 rounded-lg bg-white/90 border border-sky-100 shadow-sm flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-sky-50 shrink-0">
+                        {getWeatherIcon(weatherData.condition)}
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[11px] text-gray-500 block font-medium truncate">
+                          {weatherData.condition}
+                        </span>
+                        <span className="text-xs font-bold text-gray-900 capitalize truncate block">
+                          {weatherData.description}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Humidity */}
+                    <div className="p-3 rounded-lg bg-white/90 border border-sky-100 shadow-sm flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-blue-50 text-blue-600 shrink-0">
+                        <Droplets className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className="text-[11px] text-gray-500 block font-medium">
+                          Humidity
+                        </span>
+                        <span className="text-lg font-bold text-gray-900">
+                          {weatherData.humidity}%
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Wind Speed */}
+                    <div className="p-3 rounded-lg bg-white/90 border border-sky-100 shadow-sm flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-teal-50 text-teal-600 shrink-0">
+                        <Wind className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className="text-[11px] text-gray-500 block font-medium">
+                          Wind Speed
+                        </span>
+                        <span className="text-lg font-bold text-gray-900">
+                          {weatherData.windSpeed} m/s
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Weather Alerts & City Match Footnote */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 text-xs text-sky-900/90">
+                    <div className="flex items-center gap-1.5">
+                      {weatherData.alerts ? (
+                        <span className="inline-flex items-center gap-1 text-amber-700 font-bold bg-amber-100/90 px-2 py-0.5 rounded">
+                          <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
+                          Severe Weather Alert: {weatherData.alerts}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded text-[11px] font-medium">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          No active weather warnings
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[11px] text-gray-500">
+                      Reporting Station: <strong>{weatherData.city}</strong>
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Advisory Disclaimer */}
+              <div className="pt-2 border-t border-sky-200/60 text-[11px] text-sky-900/75 flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                <span>
+                  <strong>Advisory:</strong> Meteorological readings provide external context for field conditions. Admins hold full responsibility for final claim decisions.
+                </span>
+              </div>
+            </div>
 
             {/* If Already Reviewed: Show Existing Review Notes & Audit Info */}
             {selectedClaim.status !== 'Pending' && (
