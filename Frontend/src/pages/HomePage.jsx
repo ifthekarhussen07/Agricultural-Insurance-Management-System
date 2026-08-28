@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Sprout, Shield, CloudSun, BarChart3, ArrowRight } from 'lucide-react'
 
 function HomePage() {
@@ -33,12 +34,18 @@ function HomePage() {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-emerald-600 font-medium px-4 py-2 rounded-lg hover:bg-emerald-50 transition-colors cursor-pointer">
+            <Link
+              to="/login"
+              className="text-sm text-emerald-600 font-medium px-4 py-2 rounded-lg hover:bg-emerald-50 transition-colors"
+            >
               Sign In
-            </span>
-            <span className="text-sm text-white font-medium px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg shadow-md shadow-emerald-200 hover:shadow-lg hover:shadow-emerald-300 transition-all cursor-pointer">
+            </Link>
+            <Link
+              to="/register"
+              className="text-sm text-white font-medium px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg shadow-md shadow-emerald-200 hover:shadow-lg hover:shadow-emerald-300 transition-all"
+            >
               Get Started
-            </span>
+            </Link>
           </div>
         </div>
       </nav>
@@ -62,10 +69,13 @@ function HomePage() {
             farming communities.
           </p>
           <div className="flex items-center justify-center gap-4">
-            <span className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 hover:-translate-y-0.5 transition-all cursor-pointer">
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 hover:-translate-y-0.5 transition-all"
+            >
               Explore Platform
               <ArrowRight className="w-4 h-4" />
-            </span>
+            </Link>
           </div>
         </div>
       </section>
