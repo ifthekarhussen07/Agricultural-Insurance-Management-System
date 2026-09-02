@@ -16,7 +16,7 @@
 The **Agricultural Insurance Management System (AgriInsure)** is an end-to-end web application built to digitize and simplify the agricultural crop insurance lifecycle. It bridges the gap between rural farming communities and insurance administrators by replacing paper-heavy, slow assessment processes with a centralized modern portal.
 
 ### The Problem Addressed
-Traditional crop insurance systems often suffer from fragmented policy catalogues, opaque claim evaluation timelines, high administrative friction, and the lack of accessible meteorological context during field damage verifications. This application provides a unified workspace where farmers can easily browse protection plans and submit claims, while administrators can evaluate incident data and inspect real-time weather conditions before making settlement decisions.
+Established crop insurance systems often suffer from fragmented policy catalogues, opaque claim evaluation timelines, high administrative friction, and the lack of accessible meteorological context during field damage verifications. This application provides a unified workspace where farmers can easily browse protection plans and submit claims, while administrators can evaluate incident data and inspect real-time weather conditions before making settlement decisions.
 
 ### Primary User Roles
 * **Farmers (Users)**: Explore available crop protection policies, file formal loss claims with incident evidence, track multi-stage claim evaluation progress, and monitor live regional weather conditions.
