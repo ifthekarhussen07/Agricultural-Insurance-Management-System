@@ -54,7 +54,7 @@ Administrator Workflow:
 
 Farming communities routinely face unpredictable climate hazards—such as droughts, flash floods, hailstorms, and unseasonal frosts. However, accessing financial protection and receiving claim payouts is often hindered by systemic bottlenecks:
 
-1. **Manual & Fragmented Claim Processing**: Physical paperwork and fragmented spreadsheets cause prolonged delays, leaving vulnerable farmers without timely compensation following severe weather events.
+1. **Manual & Fragmented Claim Processing**: Physical paperwork and fragmented spreadsheets cause prolonged delays, leaving Exposed farmers without timely compensation following severe weather events.
 2. **Lack of Centralized Policy Catalogs**: Farmers frequently lack clear visibility into covered crop types, premium costs, maximum indemnity limits, and active policy durations.
 3. **Opaque Claim Tracking**: Once a claim is filed, claimants often have no way to verify whether their submission is queued, under review, or resolved.
 4. **Disjointed Weather Context**: Adjusters and claim reviewers rarely have immediate access to meteorological readings for the incident location, making verification cumbersome.
